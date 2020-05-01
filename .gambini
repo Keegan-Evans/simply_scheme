@@ -1,0 +1,4 @@
+(load "simply.scm")
+(load "functions.scm")
+(load "ch6.scm")
+(load "ch7.scm")
