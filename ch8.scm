@@ -199,4 +199,7 @@
 (define (unspell phone_word)
   (accumulate word (every phone-l2n phone_word)))
 
-
+; 8.14
+(define (subword wd start end)
+  ((repeated bl (- (count wd) end))
+   ((repeated bf start) wd)))
