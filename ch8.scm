@@ -120,4 +120,7 @@
 	(else wd)))
 
 ; 8.9
-
+; Provide the function for the first argument of each higher order procedure that will return a complete sentence given to the procedure as the second argument.
+; every: word
+; keep: (define (always-one arg) 1)
+; accumulate: sentence
