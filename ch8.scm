@@ -124,3 +124,79 @@
 ; every: word
 ; keep: (define (always-one arg) 1)
 ; accumulate: sentence
+
+; 8.10
+(define (true-for-all? pred sent)
+  (if (equal? (count sent) (count (keep pred sent)))
+      #t
+      #f))
+
+; 8.11
+(define (base-grade grade)
+  (cond ((equal? (first grade) 'a) 4.0)
+	((equal? (first grade) 'b) 3.0)
+	((equal? (first grade) 'c) 2.0)
+	((equal? (first grade) 'd) 1.0)
+	(else 0.0)))
+(define (grade-mod grade)
+  (cond ((equal? (bf grade) '+) 0.33)
+	((equal? (bf grade) '-) (- 0.33))
+	(else 0)))
+
+(define (grade-num grade)
+  (+ (base-grade grade) (grade-mod grade)))
+
+(define (gpa sent)
+  (/ (accumulate + (every grade-num sent)) 
+     (count sent)))
+
+; 8.12
+(define (um? wd)
+  (if (equal? wd 'um)
+      #t
+      #f))
+(define (count-ums sent)
+  (count (keep um? sent)))
+
+; 8.13
+(define (phone-l2n letter)
+  (cond ((or (equal? letter 'a)
+	     (equal? letter 'b)
+	     (equal? letter 'c))
+	 2)
+	((or (equal? letter 'd)
+	     (equal? letter 'e)
+	     (equal? letter 'f))
+	 3)
+	((or (equal? letter 'g)
+	     (equal? letter 'h)
+	     (equal? letter 'i))
+	 4)
+	((or (equal? letter 'j)
+	     (equal? letter 'k)
+	     (equal? letter 'l))
+	 5)
+	((or (equal? letter 'm)
+	     (equal? letter 'n)
+	     (equal? letter 'o))
+	 6)
+	((or (equal? letter 'p)
+	     (equal? letter 'q)
+	     (equal? letter 'r)
+	     (equal? letter 's))
+	 7)
+	((or (equal? letter 't)
+	     (equal? letter 'u)
+	     (equal? letter 'v))
+	 8)
+	((or (equal? letter 'w)
+	     (equal? letter 'x)
+	     (equal? letter 'y)
+	     (equal? letter 'z))
+	 9)
+	(else '(unknown))))
+
+(define (unspell phone_word)
+  (accumulate word (every phone-l2n phone_word)))
+
+
