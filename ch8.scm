@@ -202,4 +202,4 @@
 ; 8.14
 (define (subword wd start end)
   ((repeated bl (- (count wd) end))
-   ((repeated bf start) wd)))
+   ((repeated bf (- start 1)) wd)))
