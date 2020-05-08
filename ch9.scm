@@ -51,3 +51,18 @@
 (define (my_appearances arg1 arg2)
   (count
     (keep (lambda (letter) (equal? letter arg1)) arg2)))
+
+; 9.11
+(define (unabbrev sent1 sent2)
+  (every (lambda (wd)
+		(if (number? wd)
+		    (item wd sent2)
+		    wd))
+	 sent1))
+
+; 9.12
+(define (first-last sent)
+  (keep (lambda (wd) (if (equal? (first wd) (last wd))
+			 #t
+			 #f))
+	sent))

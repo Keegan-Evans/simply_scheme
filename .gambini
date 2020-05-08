@@ -3,3 +3,4 @@
 (load "ch6.scm")
 (load "ch7.scm")
 (load "ch8.scm")
+(load "ch9.scm")
