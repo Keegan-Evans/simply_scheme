@@ -66,3 +66,37 @@
 			 #t
 			 #f))
 	sent))
+
+; 9.13
+(define (compose f g)
+  (lambda (arg) (f (g arg))))
+
+; 9.14
+(define (substitute target new sent)
+  (every (lambda (wd)
+	   (if (equal? wd target)
+	       new
+	       wd))
+	 sent))
+
+; 9.15
+(define (type-check fun pred)
+  (lambda (arg) 
+    (if (pred arg)
+	(fun arg)
+	#f)))
+
+; 9.16
+(define (aplize fun)
+  (lambda (args) 
+    (if (sentence? args)
+	(every fun args)
+	(fun args))))
+
+; 9.17
+(define (keep-2 pred sent)
+  (every (lambda (wd) 
+	   (if (pred wd)
+	       wd
+	       '()))
+	 sent))
