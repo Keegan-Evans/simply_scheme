@@ -20,4 +20,9 @@
 	((equal? (bf card) 'j) 1) 
 	(else 0)))
 
+(define (high-card-points hand)
+  (accumulate + (every card-val hand)))
 
+; (define (suit-counts hand)
+;   (accumulate se (every (count (keep (lambda (card) (equal? (first card) suit)) hand)) '(h s c d))))
+; need to spread out so that you can substitute in suit (lambda (suit) blalala)  
