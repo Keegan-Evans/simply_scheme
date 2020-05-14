@@ -23,6 +23,27 @@
 (define (high-card-points hand)
   (accumulate + (every card-val hand)))
 
-; (define (suit-counts hand)
-;   (accumulate se (every (count (keep (lambda (card) (equal? (first card) suit)) hand)) '(h s c d))))
-; need to spread out so that you can substitute in suit (lambda (suit) blalala)  
+; did not read the instructions closely enough, this combines count-suit
+; and suit counts, which made the process much more challenging.
+; The seperate procedures shall follow.
+;(define (count-suit hand)
+;  (every 
+;   (lambda (suit) (word suit (accumulate 
+;			 +
+;			 (every
+;			  (lambda (card) 
+;			    	(if (equal? (first card) suit) 1 0))
+;			  hand)))) 
+;     '(h d s c)))
+
+(define (count-suit suit hand)
+  (accumulate 
+    +
+    (every 
+     (lambda (card) (if (equal? (first card) suit)
+			1 
+			0)) 
+     hand)))
+
+(define (suit-counts hand)
+  (every (lambda (individual_suit) (count-suit individual_suit hand)) '(s h c d)))
