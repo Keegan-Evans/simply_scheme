@@ -40,10 +40,12 @@
   (accumulate 
     +
     (every 
-     (lambda (card) (if (equal? (first card) suit)
-			1 
-			0)) 
-     hand)))
+      (lambda (card) (if (equal? (first card) suit)
+			 1 
+			 0)) 
+      hand)))
 
 (define (suit-counts hand)
-  (every (lambda (individual_suit) (count-suit individual_suit hand)) '(s h c d)))
+  (every 
+    (lambda (individual_suit) (count-suit individual_suit hand)) 
+    '(s h c d)))
