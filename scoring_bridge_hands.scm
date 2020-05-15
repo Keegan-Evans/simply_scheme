@@ -49,3 +49,17 @@
   (every 
     (lambda (individual_suit) (count-suit individual_suit hand)) 
     '(s h c d)))
+
+(define (suit-dist-points num)
+  (cond ((= num 0) 3)
+	((= num 1) 2)
+	((= num 2) 1)
+	(else 0)))
+
+(define (hand-dist-points hand)
+  (accumulate + (every suit-dist-points (suit-counts hand))))
+
+(define (bridge-val hand)
+  (+
+    (high-card-points hand)
+    (hand-dist-points hand)))
