@@ -5,3 +5,5 @@
 (load "ch8.scm")
 (load "ch9.scm")
 (load "scoring_bridge_hands.scm")
+(load "ch10.scm")
+
