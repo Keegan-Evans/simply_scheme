@@ -79,7 +79,9 @@
 
 ; move choice using semipredicates
 (define (ttt-choose triples me)
-  (cond ((i-can-win? triples me)) ; kludge fix by using a semipredicate
+  (cond ((already-won? triples me))
+	((tie-game? triples me))
+	((i-can-win? triples me)) ; kludge fix by using a semipredicate
 	((opponent-can-win? triples me))
 	((i-can-fork? triples me))
 	((i-can-advance? triples me))
