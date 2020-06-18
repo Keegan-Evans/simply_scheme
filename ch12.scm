@@ -77,6 +77,22 @@
 	(else 0)))
 
 (define (gpa grades)
-  (if (empty? grades)
-      0
-      (pass)))
+  (if (= (count grades) 1)
+    (+ (base-grade (first grades))
+       (grade-modifier (first grades)))
+    (/ (+ 
+	 (+ (base-grade (first grades))
+	    (grade-modifier (first grades)))
+	 (gpa (bf grades)))
+       2)))
+
+; 12.7
+; helper procedure
+(define (spell-digit digit)
+  (item (+ 1 digit)
+	'(zero one two three four five six seven eight nine)))
+
+(define (spell-number num)
+  (if (empty? num)
+    '()
+    (se (spell-digit (first num)) (spell-number (bf num)))))
