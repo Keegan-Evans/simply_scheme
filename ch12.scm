@@ -96,3 +96,20 @@
   (if (empty? num)
     '()
     (se (spell-digit (first num)) (spell-number (bf num)))))
+
+; 12.8
+(define (numbers sent)
+  (cond ((empty? sent) '())
+	((number? (first sent))
+	 (se (first sent) (numbers (bf sent))))
+	(else 
+	  (se (numbers (bf sent))))))
+
+; 12.9
+; real-word? helper procedure
+(define (real-word? wd)
+  (not (member? wd '(a the an in of and for to with))))
+
+(define (real-words sent)
+  (cond ((empty? sent) '())
+	(
