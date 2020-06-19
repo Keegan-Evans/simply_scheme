@@ -112,4 +112,43 @@
 
 (define (real-words sent)
   (cond ((empty? sent) '())
-	(
+	((member? (first sent) '(a the an in of and for to with))
+	 (real-words (bf sent)))
+	(else (se (first sent) (real-words (bf sent))))))
+
+; 12.10
+(define (remove wd sent)
+  (cond ((empty? sent) '())
+	((equal? (first sent) wd) (remove wd (bf sent)))
+	(else (se (first sent) (remove wd (bf sent))))))
+
+; 12.11
+(define (count sent)
+  (if (empty? sent)
+    0
+    (+ 1 (count (bf sent)))))
+
+; 12.12
+
+; helper function, romnan-value
+(define (roman-value letter)
+  (cond ((equal? letter 'i) 1)
+	((equal? letter 'v) 5)
+	((equal? letter 'x) 10)
+	((equal? letter 'l) 50)
+	((equal? letter 'c) 100)
+	((equal? letter 'd) 500)
+	((equal? letter 'm) 1000)
+	(else 'huh?)))
+
+(define (arabic num)
+  (cond ((= (count num) 1) 0)
+	((< (first num) (first (bf num)))
+	 (+ (- (roman-value (first (bf num)))
+	       (roman-value (first num)))
+	    (arabic (bf (bf num)))))
+	((
+	       
+
+	((equal? letter x) y)
+	((equal? letter x) y)
