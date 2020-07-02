@@ -141,14 +141,20 @@
 	((equal? letter 'm) 1000)
 	(else 'huh?)))
 
-(define (arabic num)
-  (cond ((= (count num) 1) 0)
-	((< (first num) (first (bf num)))
-	 (+ (- (roman-value (first (bf num)))
-	       (roman-value (first num)))
-	    (arabic (bf (bf num)))))
-	((
-	       
+(define (roman_less primary subsequent)
+  (if (< (roman-value primary) (roman-value subsequent))
+    1
+    0))
 
-	((equal? letter x) y)
-	((equal? letter x) y)
+(define (arabic num)
+  (cond ((= (count num) 0) 0)
+	((and
+	  (> (count num) 1)
+	  (<= (roman-value (first num))
+	     (roman-value (first (bf num)))))
+	 (- (arabic (bf num))
+	    (roman-value (first num))))
+	(else (+ (roman-value (first num))
+		  (arabic (bf num))))))
+
+
