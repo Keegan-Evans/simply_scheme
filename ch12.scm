@@ -157,4 +157,31 @@
 	(else (+ (roman-value (first num))
 		  (arabic (bf num))))))
 
-
+; 12.13
+(define (describe-time secs)
+  (cond
+    ((> (floor (/ secs 3153600000)) 1)
+	 (se (floor (/ secs 3153600000)) 
+	     'centuries
+	     (describe-time (remainder secs 3153600000))))
+	((= (floor (/ secs 3153600000)) 1)
+	 (se (floor (/ secs 3153600000)) 
+	     'century
+	     (describe-time (remainder secs 3153600000))))
+	((> (floor (/ secs 31536000)) 0)
+	 (se (floor (/ secs 31536000)) 
+             'years
+             (describe-time (remainder secs 31536000))))
+	((> (floor (/ secs 86400)) 0)
+         (se (floor (/ secs 86400)) 
+             'days
+             (describe-time (remainder secs 86400))))
+	((> (floor (/ secs 3600)) 0)                 
+         (se (floor (/ secs 3600)) 
+             'hours
+             (describe-time (remainder secs 3600))))
+	((> (floor (/ secs 60)) 0)                
+         (se (floor (/ secs 60)) 
+             'minutes
+             (describe-time (remainder secs 60))))
+	(else (se secs 'seconds))))

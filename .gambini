@@ -7,4 +7,5 @@
 (load "scoring_bridge_hands.scm")
 (load "ch10.scm")
 (load "ttt_mine.scm")
+(load "ch13.scm")
 
