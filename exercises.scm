@@ -1,5 +1,3 @@
-(load "simply")
-
 (define (test fun)
   (fun '(a b c) '(d e f)))
 
@@ -900,4 +898,31 @@
 ; fourth takes 'oughoutthr and returns 'oughoutthray
 
 ; 13.3
+; Each time downup is recursively called, one letter is removed from the
+; input word. When the word only consists of the one letter, the recursive
+; tries to call downup with the word less one letter, which is an empty
+; which is not an allowed input to `but-last`, leading to an error being
+; thrown.
 
+; 13.4
+
+; Because you are not changing n, therefore it cannot move any closer to
+; or reach the base case, so the situation applies even to negative
+; numbers.
+
+; 13.5
+
+(define (downup wd)
+  (if (= (count wd) 1)
+    (se wd)
+    (se wd (downup (bl wd)) wd)))
+
+; This wouldn't work, because information (the original word) is lost when
+; the procedure is invoked again. 
+
+; 13.6
+
+; The "little person" evaluating (factorial 2) has determined this value
+; and now hands that value to the "little person evaluating (factorial 3)"
+; who asked for this value, who can no determine the value of (factorial 3)
+; and so on up the line.
