@@ -889,7 +889,7 @@
 (define (pigl wd)
   (if (member? (first wd) 'aeiou)
     (word wd 'ay)
-    (pigl (word (bf word) (first wd)))))
+    (pigl (word (bf wd) (first wd)))))
 
 ; 4:
 ; first one takes 'throughout and hands out (pigl 'hroughoutt)
