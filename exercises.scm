@@ -926,3 +926,139 @@
 ; and now hands that value to the "little person evaluating (factorial 3)"
 ; who asked for this value, who can no determine the value of (factorial 3)
 ; and so on up the line.
+
+; 14.0a
+(define (letter-pair letter wd)
+  (if (empty? wd)
+    '()
+    (se (word letter (first wd)) (letter-pair letter (bf wd)))))
+
+(define (pair-every-letter-helper let-num wd)
+  (if (= let-num 0)
+    '()
+    (se (letter-pair (item let-num wd) wd) 
+	(pair-every-letter-helper (- let-num 1) wd))))
+
+(define (pair-every-letter wd)
+  (pair-every-letter-helper (count wd) wd))
+
+; 14.1-keep
+(define (remove-once wd sent)
+  (cond ((empty? sent) '())
+	((equal? wd (first sent))
+	 (se (bf sent)))
+	(else (se (first sent) 
+		  (remove-once wd (bf sent))))))
+
+; 14.2 every
+(define (up wd)
+  (up-helper 1 wd))
+
+(define (up-helper num wd)
+  (if (= num (count wd)) 
+    wd
+    (se ((repeated bl (- (count wd) num)) wd)
+	(up-helper (+ 1 num) wd))))
+
+; 14.3 accumulate
+
+(define (remdup sent)
+  (remdup-helper '()  sent))
+
+(define (remdup-helper in-words sent)
+  (cond ((empty? sent) in-words)
+	((member? (first sent) in-words)
+	 (remdup-helper in-words (bf sent)))
+	(else (remdup-helper 
+		(se in-words (first sent)) 
+		(bf sent)))))
+
+; 14.4 keep
+(define (odds sent)
+  (odds-helper 1 sent))
+
+(define (odds-helper bool sent)
+  (cond ((empty? sent) '())
+	((= bool 1) 
+	 (se (first sent) (odds-helper 0 (bf sent))))
+	(else (odds-helper 1 (bf sent)))))
+
+; 14.5 accumulate
+(define (letter-count sent)
+  (if (empty? sent)
+    0
+    (+ (count (first sent)) (letter-count (bf sent)))))
+
+; 14.6 every
+
+(define (member-rec? wd group)
+  (cond ((empty? group) #f)
+	((equal? wd (first group)) #t)
+	(else (member-rec? wd (bf group)))))
+
+; 14.7 every
+
+(define (differences num-sent)
+  (if (= (count num-sent) 1) 
+    '()
+    (se (- (first (bf num-sent)) (first num-sent))
+	(differences (bf num-sent)))))
+
+; 14.8 every
+
+; helper procedure to manage number of times word is repeated
+(define (repeat-word num wd)
+  (if (= num 0) 
+    '()
+    (se wd (repeat-word (- num 1) wd))))
+
+(define (expand sent)
+  (cond ((empty? sent) '())
+	((and (number? (first sent))
+	      (= (count sent) 1))
+	 (se (first sent)))
+	((number? (first sent))
+	 (se (repeat-word (first sent) (first (bf sent)))
+	     (expand (bf (bf sent)))))
+	(else (se (first sent)
+		  (expand (bf sent))))))
+
+; 14.9
+
+(define (location wd sent)
+  (location-helper 1 wd sent))
+
+(define (location-helper ct wd sent)
+  (cond ((empty? sent) #f)
+	((equal? (first sent) wd) ct)
+	(else (location-helper (+ ct 1) wd (bf sent)))))
+
+; 14.10 accumulate
+
+(define (count-adjacent-duplicates sent)
+  (cad-helper 0 sent))
+
+(define (cad-helper ct sent)
+  (cond ((= (count sent) 1) ct)
+	((equal? (first sent) (first (bf sent)))
+	 (cad-helper (+ ct 1) (bf sent)))
+	(else (cad-helper ct (bf sent)))))
+
+; 14.11 every
+
+(define (remove-adjacent-duplicates sent)
+  (cond ((empty? sent) '())
+	((= (count sent) 1) (first sent))
+	((equal? (first sent) (first (bf sent)))
+	 (se (first sent) 
+	     (remove-adjacent-duplicates (bf (bf sent)))))
+	(else (se (first sent) 
+		  (remove-adjacent-duplicates (bf sent))))))
+
+; 14.12 every
+
+(define (progressive-squares? num-sent)
+  (cond ((= (count num-sent) 1) #t)
+	((= (square (first num-sent)) (first (bf num-sent)))
+	 (progressive-squares? (bf num-sent)))
+	(else #f)))
