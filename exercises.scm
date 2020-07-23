@@ -1062,3 +1062,96 @@
 	((= (square (first num-sent)) (first (bf num-sent)))
 	 (progressive-squares? (bf num-sent)))
 	(else #f)))
+
+; 14.13 every
+
+; (define (pigl wd)
+;   (if (member? (first wd) 'aeiou)
+;     (word wd 'ay)
+;     (pigl (word (bf wd) (first wd)))))
+
+(define (robust-pigl wd)
+  (pigl-helper (count wd) wd))
+
+(define (pigl-helper ct wd)
+  (cond ((= ct 0) (word wd 'ay))
+	((member? (first wd) 'aeiou)
+	 (word wd 'ay))
+	(else (pigl-helper 
+		(- ct 1) 
+		(word (bf wd) (first wd))))))
+
+; 14.14 
+
+(define (same-shape? sent1 sent2)
+  (cond ((and (empty? sent1) (empty? sent2))
+	 #t)
+
+    	((not (= (count sent1) (count sent2)))
+	 #f)
+	
+	((not (= (count (first sent1))
+		 (count (first sent2))))
+	 #f)
+		
+	(else (same-shape? (bf sent1) (bf sent2)))))
+	
+; 14.15
+
+(define (merge sent1 sent2)
+  (cond ((empty? sent1) sent2)
+	((empty? sent2) sent1)
+	((< (first sent1) (first sent2))
+	 (se (first sent1) (merge (bf sent1) sent2)))
+	(else (se (first sent2) (merge sent1 (bf sent2))))))
+
+; 14.16 
+
+(define (syllables wd)
+  (syllable-helper 0 wd))
+
+(define (syllable-helper ct wd)
+  (cond ((empty? wd) ct)
+	
+	; single syllable for silent e
+	((silent-e? wd)
+	 (syllable-helper (+ ct 1) ((repeated bf 3) wd)))
+	
+	; 3 adjancent vowels syllable
+	((three-con-vowels? wd)
+	 (syllable-helper (+ ct 1) ((repeated bf 3) wd)))
+
+	; 2 adjacent vowels syllable
+	((and (> (count wd) 1)
+	      (vowel? (first wd)) 
+	      (vowel? (first (bf wd))))
+	 (syllable-helper (+ ct 1) (bf (bf wd))))
+
+	; single syllable per vowel
+	((vowel? (first wd))
+	 (syllable-helper (+ ct 1) (bf wd)))
+	
+	(else (syllable-helper ct (bf wd)))))
+
+(define (silent-e? wd)
+  (if (and (>= (count wd) 3)
+	   (vowel? (first wd))
+	   (not (vowel? (first (bf wd))))
+	   (equal? (first (bf (bf wd))) 'e))
+    #t
+    #f))
+
+(define (three-con-vowels? wd)
+  (if (and (>= (count wd) 3)
+	   (vowel? (first wd))
+	   (vowel? (first (bf wd)))
+	   (vowel? (first (bf (bf wd)))))
+    #t
+    #f))
+
+; PROJECT: SPELLING NAMES OF HUGE NUMBERS
+
+
+; 15.1
+
+

@@ -97,3 +97,92 @@
     (first sent)
     (max (first sent)
 	 (sent-max (bf sent)))))
+
+; combining patterns
+
+; combines keep and accumulate below. Doing 2 things: get rid of things
+; that are numbers and also compute the sum of all the numbers
+(define (add-numbers sent)
+  (cond ((empty? sent) 0)
+	((number? (first sent))
+	 (+ (first sent) (add-numbers (bf sent))))
+	(else (add-numbers (bf sent)))))
+
+; combines every and keep: take a sentence and translate every word in the
+; sentence that contains a vowel into pig latin and excludes words that
+; don't have a vowel as they can't be translated into pig latin
+
+(define (safe-pigl sent)
+  (cond ((empty? sent) '())
+	((has-vowel? (first sent))
+	 (se (pigl (first sent)) (safe-pigl (bf sent))))
+	(else (safe-pigl (bf sent)))))
+
+(define (has-vowel? wd)
+  (not (empty? (keep-vowels wd))))
+
+; combines all three patterns:
+
+(define (acronym-rec sent)
+  (cond ((empty? sent) "")
+	((real-word? (first sent))
+	 (word (first (first sent))
+	       (acronym-rec (bf sent))))
+	(else (acronym-rec (bf sent)))))
+
+; Helper procedures can be used to hold extra arguments that can then be
+; used for recursion.
+
+(define (every-nth n sent)
+  (every-nth-helper n n sent))
+
+(define (every-nth-helper interval remaining sent)
+  (cond ((empty? sent) '())
+	((= remaining 1)
+	 (se (first sent) 
+	     (every-nth-helper interval interval (bf sent))))
+	(else (every-nth-helper interval (- remaining 1) (bf sent)))))
+
+; Can think of this combination of an initialization procedure and
+; a helper procedure as another pattern.
+
+; Using Recursive Patterns
+; you can think of them as templates with empty slots to fill in for
+; a particular problem.
+
+; (define (every-something sent)
+;   (if (empty? sent)
+;     '()
+;     (se (___________ (first sent))
+; 	(every-something (bf sent)))))
+; 
+; (define (keep-if-something sent)
+;   (cond ((empty? sent) '())
+; 	((_______? (first sent))
+; 	 (se (first sent) (keep-if-something (bf sent))))
+; 	(else (keep-if-something (bf sent)))))
+; 
+; (define (accumulate-somehow sent)
+;   (if (empty? sent)
+;     "identity-element"
+;     ("combiner" (first sent) (accumulate-somehow (bf sent)))))
+
+;an example that uses keep
+
+(define (first-number sent)
+  (cond ((empty? sent) 'no-number)
+	((number? (first sent)) (first sent))
+	(else (first-number (bf sent)))))
+
+; Problems that don't follow patterns
+
+(define (sent-before? sent1 sent2)
+  (cond ((empty? sent1) #t)
+	((empty? sent2) #f)
+	((before? (first sent1) (first sent2)) #t)
+	((before? (first sent2) (first sent1)) #f)
+	(else (sent-before? (bf sent1) (bf sent2)))))
+
+; kind kind of an accumulate, but really the structure of a keep(3 options
+; essentially, but doesn't really look like either.
+
