@@ -1254,19 +1254,19 @@
 
 ; First try:
 
-(define (substrings wd)
+(define (substrings-first-try wd)
   (if (empty? wd)
     ""
-    (se (substrings-helper 
+    (se (substrings-first-try-helper 
 	  (first wd)
 	  (bf wd))
-	(substrings (bf wd)))))
+	(substrings-first-try (bf wd)))))
 
-(define (substrings-helper beginning end)
+(define (substrings-first-try-helper beginning end)
   (if (= (count end) 0)
     '()
     (let ((so-far (word beginning (first end))))
-      (se so-far (substrings-helper so-far (bf end))))))
+      (se so-far (substrings-first-try-helper so-far (bf end))))))
 
 ; second
 (define (diminish wd)
@@ -1274,12 +1274,12 @@
     (se "")
     (se wd (diminish (bl wd)))))
 
-(define (substrings2 wd)
+(define (substrings wd)
   (single-instance
     (if (empty? wd)
       (se "")
       (se (diminish wd)
-          (substrings2 (bf wd))))))
+          (substrings (bf wd))))))
 
 (define (single-instance-helper elements-so-far sent)
   (cond ((empty? sent)
@@ -1293,3 +1293,39 @@
 (define (single-instance sent)
   (single-instance-helper '() sent))
 
+
+; 15.4
+
+(define (substring? is-a-substring-of-wd wd)
+  (member? is-a-substring-of-wd (substrings wd)))
+
+; 15.5 
+
+;(define (phone-spell phone-num)
+;  (if (empty? phone-num)
+;    '()
+;    (let ((after (phone-spell (bf phone-num))))
+;      (se 
+(define (phone-num-2-letter num)
+  (cond ((= num 2) 'abc)
+	((= num 3) 'def)
+	((= num 4) 'ghi)
+	((= num 5) 'jkl)
+	((= num 6) 'mno)
+	((= num 7) 'pqrs)
+	((= num 8) 'tuv)
+	((= num 9) 'wxyz)
+	(else "")))
+
+(define (phone-spell phone-num)
+  (if (empty? phone-num)
+    '()
+    (let ((end (phone-spell (bf phone-num))))
+      (se (each-num-letter 
+	    (phone-num-2-letter (first phone-num)) end)))))
+
+(define (each-num-letter letters end-of-word)
+  (if (empty? letters)
+    '() 
+    (se (word (first letters) end-of-word)
+	(each-num-letter (bf letters) end-of-word))))
