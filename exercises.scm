@@ -1176,7 +1176,7 @@
 (define (merge sent1 sent2)
   (cond ((empty? sent1) sent2)
 	((empty? sent2) sent1)
-	((< (first sent1) (first sent2))
+	((before? (first sent1) (first sent2))
 	 (se (first sent1) (merge (bf sent1) sent2)))
 	(else (se (first sent2) (merge sent1 (bf sent2))))))
 
@@ -1225,8 +1225,71 @@
     #f))
 
 ; PROJECT: SPELLING NAMES OF HUGE NUMBERS
-
+; See separate file
 
 ; 15.1
 
+(define (to-binary num)
+  (cond ((= num 0) "")
+	((odd? num) (word (to-binary (/ (- num 1) 2)) 1))
+	(else (word (to-binary (/ num 2)) 0))))
+; 15.2
+
+(define (sent-to-word sent)
+  (if (empty? sent)
+    ""
+    (word (first sent) 
+	  (sent-to-word (bf sent)))))
+
+(define (palindrome?-helper wd)
+  (cond ((<= (count wd) 1) #t)
+	((not (equal? (first wd) (last wd)))
+	 #f)
+	(else (palindrome?-helper (bf (bl wd))))))
+
+(define (palindrome? sent)
+  (palindrome?-helper (sent-to-word sent)))
+
+; 15.3 substring
+
+; First try:
+
+(define (substrings wd)
+  (if (empty? wd)
+    ""
+    (se (substrings-helper 
+	  (first wd)
+	  (bf wd))
+	(substrings (bf wd)))))
+
+(define (substrings-helper beginning end)
+  (if (= (count end) 0)
+    '()
+    (let ((so-far (word beginning (first end))))
+      (se so-far (substrings-helper so-far (bf end))))))
+
+; second
+(define (diminish wd)
+  (if (empty? wd)
+    (se "")
+    (se wd (diminish (bl wd)))))
+
+(define (substrings2 wd)
+  (single-instance
+    (if (empty? wd)
+      (se "")
+      (se (diminish wd)
+          (substrings2 (bf wd))))))
+
+(define (single-instance-helper elements-so-far sent)
+  (cond ((empty? sent)
+	 elements-so-far)
+	((member? (first sent) elements-so-far)
+	 (single-instance-helper elements-so-far (bf sent)))
+	(else (single-instance-helper
+		(se elements-so-far (first sent))
+		(bf sent)))))
+
+(define (single-instance sent)
+  (single-instance-helper '() sent))
 
