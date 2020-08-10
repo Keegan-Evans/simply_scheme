@@ -1306,26 +1306,42 @@
 ;    '()
 ;    (let ((after (phone-spell (bf phone-num))))
 ;      (se 
-(define (phone-num-2-letter num)
-  (cond ((= num 2) 'abc)
-	((= num 3) 'def)
-	((= num 4) 'ghi)
-	((= num 5) 'jkl)
-	((= num 6) 'mno)
-	((= num 7) 'pqrs)
-	((= num 8) 'tuv)
-	((= num 9) 'wxyz)
-	(else "")))
+(define (letters num)
+  (cond ((= num 2) '(a b c))
+	((= num 3) '(d e f))
+	((= num 4) '(g h i))
+	((= num 5) '(j k l))
+	((= num 6) '(m n o))
+	((= num 7) '(p q r s))
+	((= num 8) '(t u v))
+	((= num 9) '(w x y z))
+	(else num)))
+
+(define (prepend-each a b)
+  (if (empty? a)
+    '()
+    (se (prepend-every (first a) b)
+	(prepend-each (bf a) b))))
 
 (define (phone-spell phone-num)
   (if (empty? phone-num)
-    '()
-    (let ((end (phone-spell (bf phone-num))))
-      (se (each-num-letter 
-	    (phone-num-2-letter (first phone-num)) end)))))
+    (se "")
+    (se
+      (prepend-each (letters (first phone-num))
+		    (phone-spell (bf phone-num))))))
 
-(define (each-num-letter letters end-of-word)
-  (if (empty? letters)
-    '() 
-    (se (word (first letters) end-of-word)
-	(each-num-letter (bf letters) end-of-word))))
+
+; 15.6
+
+(define (unscramble sent) 
+  (cond ((empty? sent) '())
+	((= (count sent) 2)
+	 sent)
+	((equal? (first sent) 'the)
+	 (se (unscramble (bf (bf (bl sent))))
+		  (se 'that
+		      (last sent) 
+		      'the
+		      (first (bf sent)))))
+	(else (se (first sent)
+		  (unscramble (bf sent))))))
