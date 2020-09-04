@@ -1,5 +1,2 @@
 (load "simply.scm")
-(load "functions.scm")
-(load "scoring_bridge_hands.scm")
-(load "ttt_mine.scm")
 (load "exercises.scm")
