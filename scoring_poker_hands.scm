@@ -1,10 +1,15 @@
 ; Scoring Poker Hands
 
+; Is it a flush or not? AKA all the same suite?
 (define (flush? hand)
   (cond ((equal? (count hand) 1) #t)
 	((not (equal? (first (first hand)) (first (first (bf hand)))))
 	 #f)
 	(else (flush? (bf hand)))))
+
+; How many are there of each value? Should look like:
+; (compute_ranks '(q 3 4 3 4))
+; (ONE q TWO 3 TWO 4)
 
 (define (compute_ranks vals)
   (compute_ranks_helper vals '()))
@@ -40,5 +45,11 @@
 	((= value 4) 'four)
 	(else '(hmm something went wrong))))
 
+; matching rank hands:
+; in this section we will develop functions that detect hands that are
+; scored by the basis of cards of matching rank such as four of a kind,
+; full house, three of a kind, two pair, and pair.
+; Now lets check for flushes, or sequences of cards
+; start by sorting:
 (define (rank_order vals)
   )
