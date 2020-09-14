@@ -17,7 +17,7 @@
 (define (compute_ranks_helper in_vals out_vals)
   (cond ((empty? in_vals) out_vals)
 	((member? (first in_vals) out_vals)
-	 (compute-ranks-helper (bf in_vals) out_vals))
+	 (compute_ranks_helper (bf in_vals) out_vals))
 	(else (compute_ranks_helper 
 		(bf in_vals) 
 		(se out_vals (count_rank (first in_vals) in_vals))))))
@@ -49,7 +49,68 @@
 ; in this section we will develop functions that detect hands that are
 ; scored by the basis of cards of matching rank such as four of a kind,
 ; full house, three of a kind, two pair, and pair.
-; Now lets check for flushes, or sequences of cards
+
+(define (rank_hands hand)
+  (rank_hands_helper (compute_ranks (get_ranks hand))))
+
+(define (get_ranks hand)
+  (if (empty? hand)
+    '()
+    (se (last (first hand)) (get_ranks(bf hand)))))
+
+(define (rank_hands_helper vals)
+  (cond ((member? 'four vals) '(four of a kind))
+	((and (member? 'three vals)
+	      (member? 'two vals))
+	 '(full house))
+	((member? 'three vals) 
+	 '(three of a kind))
+	((= (occurances 'two vals) 2)
+	 '(pair of pairs))
+	((member? 'two vals)
+	 'pair)
+	(else 'nothing)))
+
+(define (occurances target set)
+  (occurance_helper target set 0))
+
+(define (occurance_helper target set ct)
+  (cond ((empty? set) ct)
+	((equal? target (first set))
+	 (occurance_helper target (bf set) (+ ct 1)))
+	(else (occurance_helper target (bf set) ct))))
+
+
+; Now lets check for straights or cards in a sequential order
 ; start by sorting:
-(define (rank_order vals)
-  )
+
+(define (straight? hand)
+  (straight-helper (card-sort (get_ranks hand))))
+
+
+(define (card-sort hand)
+  (if (empty? hand)
+    '()
+    (se (first-card hand)
+	(card-sort (remove-once (first-card hand) hand)))))
+
+(define (first-card hand)
+  (first-card-helper (first hand) (bf hand)))
+
+(define (first-card-helper so-far rest)
+  (cond ((empty? rest) so-far)
+	((lower-card? so-far (first rest))
+	 (first-card-helper so-far (bf rest)))
+	(else (first-card-helper (first rest)(bf rest)))))
+
+(define card-order '(a 2 3 4 5 6 7 8 9 10 j q k))
+
+(define (lower-card? card1 card2)
+  (lower-card-helper card1 card2 card-order))
+
+(define (lower-card-helper card1 card2 order)
+  (cond ((empty? order) '(that is not possible))
+	((equal? card1 card2) card1)
+	((equal? card1 (first order)) card1)
+	((equal? card2 (first order)) card2)
+	(else (lower-card-helper card1 card2 (bf order)))))
