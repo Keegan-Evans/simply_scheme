@@ -1,5 +1,35 @@
 ; Scoring Poker Hands
 
+(define (poker-value hand)
+  (define flush-val (flush? hand))
+  (define rank-vals (card-sort (get_ranks hand)))
+  (define straight-val (straight? rank-vals))
+  (define rank-count-vals (compute-ranks rank-vals))
+  (cond ((and flush-val
+	      (equal? rank-vals '(a 10 j q k)))
+	 'royal-flush)
+	((and flush-val
+	      straight-val)
+	 'straigh-flush)
+	((member? 'four rank-count-vals)
+	 'four-of-a-kind)
+	((and (member? 'three rank-count-vals)
+	      (member? 'two rank-count-vals))
+	 'full-house)
+	((flush-val)
+	 'flush)
+	((straight-val)
+	 'straight)
+	((member? 'three rank-count-vals)
+	 'three-of-a-kind)
+	((equal? 2 (occurances 'two rank-count-vals))
+	 'two-pairs)
+	((member? 'two rank-count-vals)
+	 'pair)
+	(else 'nothing)))
+	
+
+
 ; Is it a flush or not? AKA all the same suite?
 (define (flush? hand)
   (cond ((equal? (count hand) 1) #t)
@@ -56,7 +86,7 @@
 (define (get_ranks hand)
   (if (empty? hand)
     '()
-    (se (last (first hand)) (get_ranks(bf hand)))))
+    (se (bf (first hand)) (get_ranks(bf hand)))))
 
 (define (rank_hands_helper vals)
   (cond ((member? 'four vals) '(four of a kind))
@@ -84,8 +114,15 @@
 ; Now lets check for straights or cards in a sequential order
 ; start by sorting:
 
-(define (straight? hand)
-  (straight-helper (card-sort (get_ranks hand))))
+(define (straight? ranks)
+  (straight-helper (first ranks) (bf ranks) card-order))
+
+(define (straight-helper first-card rest order)
+  (cond ((empty? rest) #t)
+	((and (equal? first-card (first order))
+	      (not (equal? (first rest) (first (bf order)))))
+	 #f)
+	(else (straight-helper (first rest) (bf rest) (bf order)))))
 
 
 (define (card-sort hand)
@@ -110,7 +147,7 @@
 
 (define (lower-card-helper card1 card2 order)
   (cond ((empty? order) '(that is not possible))
-	((equal? card1 card2) card1)
-	((equal? card1 (first order)) card1)
-	((equal? card2 (first order)) card2)
+	((equal? card1 card2) #t)
+	((equal? card1 (first order)) #t)
+	((equal? card2 (first order)) #f)
 	(else (lower-card-helper card1 card2 (bf order)))))
