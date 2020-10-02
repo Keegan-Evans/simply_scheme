@@ -1345,3 +1345,23 @@
 		      (first (bf sent)))))
 	(else (se (first sent)
 		  (unscramble (bf sent))))))
+
+; Chapter 16
+
+; 16.1
+
+(define (match_three sent)
+    (if (match '(! ! !) sent)
+	  #t
+	  #f))
+
+; 16.2
+
+;(define (two_sub_sent? sent)
+;    (cond ((equal? (match '(*sub_sent *subs_sent) sent) 'failed) #f)
+;	      (else #t)))
+
+(define (two_sub_sent? sent)
+     (if (equal? (match '(*sub *sub) sent) 'failed)
+		 #f
+		 #t))
