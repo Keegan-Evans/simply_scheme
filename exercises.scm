@@ -1357,11 +1357,9 @@
 
 ; 16.2
 
-;(define (two_sub_sent? sent)
-;    (cond ((equal? (match '(*sub_sent *subs_sent) sent) 'failed) #f)
-;	      (else #t)))
-
 (define (two_sub_sent? sent)
      (if (equal? (match '(*sub *sub) sent) 'failed)
 		 #f
 		 #t))
+
+; 16.3
