@@ -1365,7 +1365,7 @@
 ; 16.3 Design and test a pattern that matches any sentence of no more
 ; than three words.
 
-(define (less_than_three_words? sent)
+(define (at_least_three_words? sent)
     (if (equal? (match '(? ? ?) sent) '())
 	  #t
 	  #f))
@@ -1373,15 +1373,30 @@
 ; 16.4 Design and test a pattern that matches any sentence of at least
 ; three words.
 
+(define (at_most_three? sent)
+    (if (equal (match '(& & &) sent) '())
+	#t
+	#f))
+
 ; 16.5 Show sentences of length 2, 3, and 4 that match the pattern
-; (*x *y *y *x)
-; for each length, if no sentence can match the pattern, explain why not.
+; (*x *y *y *x):
+; (a a)
+; (a b b a)
+; There are no sentences of length 3 that can match, because if there is
+; a single match, then there must be two of that same sentence.
 
 ; 16.6 Show sentences of length 2, 3, and 4 that match the pattern:
 ; (*x *y &y &x)
-; For each length, if no sentence can match the pattern, explain why not.
+; No sentences of length 2, as this call requires there to be at least
+; two distinct senteneces of at least one unique word each, and since these must be paired this is not
+; possible to have only a two word sentence that will match.
+; 3x Words: The same reasoning as in 16.5 and also for the 2x word
+; sentence in this example.
+; 4x words: '(a b b a)
 
 ; 16.7 List the sentences of length 6 or less, starting with , that
-; match the pattern
+; match the pattern (*x *y *y *x)
+; '(a b b a), '(a b a b) '(a a a a) '(a a a a a a) '(a b a a b a) '(b a
+; b b a b) '(a b c a b c) '(a b c b c a)
 
 ; CHAPTER 16 IMPLEMENTATION QUESTIONS
