@@ -1362,4 +1362,26 @@
 		 #f
 		 #t))
 
-; 16.3
+; 16.3 Design and test a pattern that matches any sentence of no more
+; than three words.
+
+(define (less_than_three_words? sent)
+    (if (equal? (match '(? ? ?) sent) '())
+	  #t
+	  #f))
+
+; 16.4 Design and test a pattern that matches any sentence of at least
+; three words.
+
+; 16.5 Show sentences of length 2, 3, and 4 that match the pattern
+; (*x *y *y *x)
+; for each length, if no sentence can match the pattern, explain why not.
+
+; 16.6 Show sentences of length 2, 3, and 4 that match the pattern:
+; (*x *y &y &x)
+; For each length, if no sentence can match the pattern, explain why not.
+
+; 16.7 List the sentences of length 6 or less, starting with , that
+; match the pattern
+
+; CHAPTER 16 IMPLEMENTATION QUESTIONS
