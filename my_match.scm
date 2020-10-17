@@ -80,7 +80,7 @@
            (empty? sent))
           ((special? (first pattern)
            (firstgenmatch-special (first pattern) (bf pattern) sent)))
-          ((emtpy? sent) #f) 
+          ((empty? sent) #f) 
           ((equal? (first pattern) (first sent))
            (firstgenmatch? (bf pattern) (bf sent)))
           (else #f)))
@@ -120,7 +120,7 @@
                            (bf pattern)
                            sent
                            known-values)))
-         ((emtpy? sent) 'failed)
+         ((empty? sent) 'failed)
          ((equal? (first pattern) (first sent))
           (match-using-known-values (bf pattern) 
                                     (bf sent) 
@@ -165,13 +165,71 @@
                                pattern-rest
                                sent-unmatched
                                (add name sent-matched known-values))))
-        (cond ((not (equal? tentative-result 'failed) tentative-result)
+        (cond ((not (equal? tentative-result 'failed)) tentative-result)
               ((empty? sent-matched) 'failed)
               (else (lm-helper name
                                pattern-rest
                                (bl sent-matched)
                                (se (last sent-matched) sent-unmatched)
                                min 
-                               known-values)))))))
+                               known-values))))))
 
-                               
+; "database" functions
+
+(define (lookup name known-values)
+  (cond ((empty? known-values) 'no-value)
+        ((equal? (first known-values) name)
+         (get-value (bf known-values)))
+        (else (lookup name (skip-value known-values)))))
+
+(define (get-value stuff)
+  (if (equal? (first stuff) '!)
+      '()
+      (se (first stuff) (get-value (bf stuff)))))
+
+(define (skip-value stuff)
+    (if (equal? (first stuff) '!)
+        (bf stuff) 
+        (skip-value (bf stuff))))
+
+(define (add name value known-values)
+    (if (empty? name)
+        known-values
+        (se known-values name value '!)))
+
+; ancillary functions
+
+(define (special? wd)
+    (member? (first wd) '(* & ? !)))
+
+(define (length-ok? value howmany)
+    (cond ((empty? value) (member? howmany '(? *)))
+          ((not (empty? (bf value))) (member? howmany '(* &)))
+          (else #t)))
+
+(define (already-known-match value pattern-rest sent known-values)
+    (let ((unmatched (chop-leading-substring value sent)))
+      (if (not (equal? unmatched 'failed))
+          (match-using-known-values pattern-rest unmatched known-values)
+          'failed)))
+
+(define (chop-leading-substring value sent)
+    (cond ((empty? value) sent)
+          ((empty? sent) 'failed)
+          ((equal? (first value) (first sent))
+           (chop-leading-substring (bf value) (bf sent)))
+          (else 'failed)))
+
+; Example Small Program
+; Study how the matching of either bf pattern or bf sent with the
+; complete other can lead to the answer.
+
+(define (match? pattern sent)
+    (cond ((empty? pattern) (empty? sent))
+          ((empty? sent)
+           (and (equal? (first pattern) '*) (match? (bf pattern) sent)))
+          ((equal? (first pattern) '*)
+           (or (match? pattern (bf sent))
+               (match? (bf pattern) sent)))
+          (else (and (equal? (first pattern) (first sent))
+                     (match? (bf pattern) (bf sent))))))
