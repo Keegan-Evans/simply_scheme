@@ -1400,3 +1400,21 @@
 ; b b a b) '(a b c a b c) '(a b c b c a)
 
 ; CHAPTER 16 IMPLEMENTATION QUESTIONS
+
+; 16.8 If the sentence is empty, it first looks to see what the minimum
+; value is. If there is no minimum(that is, min = 0), then it adds the
+; blank sentence, '(), to the known values and returns the results from
+; giving the rest of the pattern to `match-using-known-values`. If the
+; minimum is one, then it returns failed.
+
+; 16.9 Pattern = '(evil *one dog) '(evil tubby dog ran)
+
+; 16.10 If it is within the words that would be captured by a special
+; character then it is retained. However, it if is elsewhere in the
+; phrase it must have a character in the pattern if it is not to fail.
+
+; 16.11: a) 4 b) 15 c) 4 d) 5 e) 13 f) 8
+; More special wildcards and wildcards near the beginning of the pattern
+; make things more difficult
+
+; 16.12 '(* *blank-known)
