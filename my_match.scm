@@ -233,3 +233,11 @@
                (match? (bf pattern) sent)))
           (else (and (equal? (first pattern) (first sent))
                      (match? (bf pattern) (bf sent))))))
+
+(define (numeric-placeholder? wd)
+  (number? (first (bf wd))))
+
+(define (get-match-number placeholder-after-symbol)
+  (if (number? (first placeholder-after-symbol))
+      (word (first placeholder-after-symbol) (get-match-number (bf placeholder-after-symbol)))
+      ""))

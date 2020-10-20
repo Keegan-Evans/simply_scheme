@@ -1418,3 +1418,42 @@
 ; make things more difficult
 
 ; 16.12 '(* *blank-known)
+
+; 16.13 '(i like to listen to *band when i ?action) 
+;       '(i like to listen to the beatles when i drive)
+
+; you would end up with a blank word ("") inserted as a name in
+; known-values ,which could create problems if there was more than one
+; unnamed placeholder in the pattern. The part that prevents this is
+; directly in the (add) function. It checks to see if the name is empty
+; and only if it is not does it add it to known values.
+
+; 16.15 Because they are both called by (lookup), which will check to
+; see if known-values is empty. If it is, then neither will be called.
+; If they are called, then they will both return a value before
+; known-values is empty.
+
+; 16.16 Because we want it to return #f if it is empty and howmany is
+; not ? or *.
+
+; 16.17 The call to (match-using-known-values) by the initial (match)
+
+; 16.18 
+
+; 1) The first words of the sent argument musut match the old value in
+;    the database. '(?place me ?place) '(give me fun)
+
+; 2) The partial pattern that remains after the placeholder must match
+;    the rest fo the sentence. '(?blank for ?blank s sake) '(love for
+;    love is doomed)
+
+; 3) The old value must be consistent with the number of words permitted
+;    by the howmany part of the placeholder. '(!adj men see &adj things)
+;   '(funny men see very funny things)
+
+; 16.19 It will fail because get-value will read the ! in known-values
+; and return '(). We need someway to differentiate between the symbol !
+; as used by the program and the symbol ! read a word from the sentence
+; known-values/the placeholder.
+
+; 16.20 
