@@ -113,6 +113,8 @@
 (define (match-using-known-values pattern sent known-values)
    (cond ((empty? pattern)
           (if (empty? sent) known-values 'failed))
+         ((numeric-placeholder? (first pattern))
+          (match-specified-number (first pattern) (bf pattern) sent known-values))
          ((special? (first pattern))
           (let ((placeholder (first pattern)))
             (match-special (first placeholder)
@@ -134,6 +136,8 @@
                  (already-known-match
                     old-value pattern-rest sent known-values)
                  'failed))
+            ((and (equal? howmany '+)
+             (match-number name pattern-rest sent known-values)))
             ((equal? howmany '?)
              (longest-match name pattern-rest sent 0 #t known-values))
             ((equal? howmany '!)
@@ -174,6 +178,14 @@
                                min 
                                known-values))))))
 
+(define (match-number name pattern-rest sent known-values)
+    (if (all-numbers? (first sent))
+        (match-using-known-values 
+            pattern-rest
+            (bf sent)
+            (add name (first sent) known-values))
+        'failed))
+
 ; "database" functions
 
 (define (lookup name known-values)
@@ -199,8 +211,15 @@
 
 ; ancillary functions
 
+(define (all-numbers? wd)
+    (cond ((empty? wd)
+           '())
+          ((number? (first wd))
+           (all-numbers? (bf wd)))
+          (else #f)))
+
 (define (special? wd)
-    (member? (first wd) '(* & ? !)))
+    (member? (first wd) '(* & ? ! +)))
 
 (define (length-ok? value howmany)
     (cond ((empty? value) (member? howmany '(? *)))
@@ -233,11 +252,60 @@
                (match? (bf pattern) sent)))
           (else (and (equal? (first pattern) (first sent))
                      (match? (bf pattern) (bf sent))))))
+; Functions for 16.20
+; Implimenting a placeholder function that will match a placeholder of
+; exactly "x" values.
 
 (define (numeric-placeholder? wd)
-  (number? (first (bf wd))))
+  (if (and (< 1 (count wd))
+           (number? (first (bf wd))))
+       #t
+       #f))
 
-(define (get-match-number placeholder-after-symbol)
+(define (get-numeric-placeholder-numval placeholder-after-symbol)
   (if (number? (first placeholder-after-symbol))
-      (word (first placeholder-after-symbol) (get-match-number (bf placeholder-after-symbol)))
+      (word (first placeholder-after-symbol) (get-numeric-placeholder-numval (bf placeholder-after-symbol)))
       ""))
+
+(define (get-numeric-placeholder-name placeholder-numval placeholder-after-symbol)
+  ((repeated bf (count placeholder-numval)) placeholder-after-symbol))
+
+(define (get-numeric-placeholder-number-and-name placeholder-after-symbol)
+  (let ((placeholder-numval (get-numeric-placeholder-numval placeholder-after-symbol)))
+    (se placeholder-numval (get-numeric-placeholder-name 
+                              placeholder-numval
+                              placeholder-after-symbol))))
+
+(define (get-first-x x sent)
+    (if (equal? x 0)
+        '()
+        (se (first sent) (get-first-x (- x 1) (bf sent)))))
+
+(define (skip-x x sent)
+    ((repeated bf x) sent))
+
+(define (match-specified-number placeholder pattern-rest sent known-values)
+    (let ((numname (get-numeric-placeholder-number-and-name (bf placeholder))))
+      (match-specified-number-helper 
+        (first numname)
+        (last numname)
+        pattern-rest
+        sent
+        known-values)))
+
+(define (match-specified-number-helper number name pattern-rest sent known-values)
+    (let ((old-value (lookup name known-values)))
+      (cond ((not (equal? old-value 'no-value))
+             (if (equal? number (count old-value))
+                 (already-known-match
+                     old-value
+                     pattern-rest
+                     sent
+                     known-values)
+                 'failed))
+            ((<= number (count sent))
+             (match-using-known-values 
+                      pattern-rest 
+                      (skip-x number sent)
+                      (add name (get-first-x number sent) known-values)))
+            (else 'failed))))

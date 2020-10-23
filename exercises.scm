@@ -1456,4 +1456,9 @@
 ; as used by the program and the symbol ! read a word from the sentence
 ; known-values/the placeholder.
 
-; 16.20 
+; 16.20 and 16.21 have functions added to the "my_match.scm" file to
+; enact these additional functionality. I probably should have written
+; what I could have as seperate files and then made sure to document the
+; other changes, but I am fairly happy with how they have worked out.
+
+; 16.22 Yep, VIM definitely does.
