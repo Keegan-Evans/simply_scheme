@@ -1462,3 +1462,57 @@
 ; other changes, but I am fairly happy with how they have worked out.
 
 ; 16.22 Yep, VIM definitely does.
+
+; 17.1 
+
+; a) Rod
+; b) Chris
+; c) (Chris Colin Hugh Paul)
+; d) Error as it is expecting a list
+; e) ((Rod Argent) Chris White)
+; f) ((rod argent) (chris white))
+; g) (rod)
+; h) (colin blunstone)
+; i) #f
+
+; 17.2
+
+(define (f1 lst1 lst2)
+    (list (append (cdr lst1) (list (car lst2)))))
+
+(define (f2 lst1 lst2)
+    (list (cdr lst1) (cadr lst2)))
+
+(define (f3 lst1 lst2)
+    (append lst1 lst1))
+
+(define (f4 lst1 lst2)
+    (list
+	  (list (car lst1)
+	        (car lst2))
+	  (append (cdr lst1)
+	          (cdr lst2))))
+
+; 17.3 It returns a list of procedures, with each procedure being
+; (lambda (y) (+ n y)), where in is one of the values taken from the
+; mapped list of numeric values. You can access them using the car and
+; cdr functions to select the correct one from the list and using that
+; as the procedure you are calling, for example to get a return value of
+; 3 from the second function (which is (lambda (y) (+ 2 y)):
+;
+; ((cadr (map (lambda (x) (lambda (y) (+ x y))) '(1 2 3 4))) 1)
+
+; REAL EXERCISES
+; 17.4 I think it will reverse the order of the list
+
+(define (mystery 1st)
+  (mystery-helper 1st '()))
+
+(define (mystery-helper 1st other)
+  (if (null? 1st)
+      other
+	  (mystery-helper (cdr 1st) (cons (car 1st) other))))
+
+; Which it does.
+
+; 17.5
