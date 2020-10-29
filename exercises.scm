@@ -1516,3 +1516,30 @@
 ; Which it does.
 
 ; 17.5
+
+(define (max2 a b)
+    (if (> b a) b a))
+(define (max . numbers)
+    (cond ((equal? (count numbers) 1)
+	       (car numbers))
+		  ((> (car numbers) (cadr numbers))
+		   (apply max (cons (car numbers) (cddr numbers))))
+		  (else (apply max (cdr numbers)))))
+
+; 17.6
+
+; First the version with only 2 arguments
+(define (mypend1 a b)
+    (if (null? a)
+	    b
+		(cons (car a) (mypend1 (cdr a) b))))
+; Version with any number of arguements. I think I will try to clean
+; this up, as currently it is very mess, but it does work. 
+(define (mypend fin . subin)
+  (cond ((null? fin)
+         (mypend (car subin) (cdr subin)))
+        ((null? (cdr subin))
+		 (mypend1 fin (car subin)))
+		(else (apply mypend
+		        (cons (mypend1 fin (car subin))
+				      (cdr subin))))))
