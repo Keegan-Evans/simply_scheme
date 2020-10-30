@@ -1552,5 +1552,5 @@
 		 ((word? (car part))
 		  (append (list (car part))
 		          (myse (cdr part))))
-		 (else (append (myse (caar part) (cdar other-words))
+		 (else (append (myse (caar part) (cdar part))
 		               (myse (cdr part))))))
