@@ -1543,3 +1543,14 @@
 		(else (apply mypend
 		        (cons (mypend1 fin (car subin))
 				      (cdr subin))))))
+
+; 17.7					  
+
+(define (myse . part)
+   (cond ((empty? (car part))
+          '())
+		 ((word? (car part))
+		  (append (list (car part))
+		          (myse (cdr part))))
+		 (else (append (myse (caar part) (cdar other-words))
+		               (myse (cdr part))))))
