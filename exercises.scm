@@ -1554,3 +1554,182 @@
 		          (myse (cdr part))))
 		 (else (append (myse (caar part) (cdar part))
 		               (myse (cdr part))))))
+
+; 17.8
+
+(define (alt-member el lst)
+    (cond ((null? lst)
+	       #f)
+		  ((equal? el (car lst))
+	       (cdr lst))
+		  (else (alt-member el (cdr lst)))))
+
+; 17.9
+
+(define (mlf lst num)
+    (if (equal? num 0)
+	    (car lst)
+		(mlf (cdr lst) (- num 1))))
+
+; Just a little something to find from the index of the reverse
+(define (rev-list-ref lst num)
+    (mlf lst (- (length lst) num)))
+
+; 17.10
+
+(define (mylength lst)
+    (lh lst 0))
+	
+;(define (length-helper lst cnt)
+;  (if (null? (car lst))
+;      (+ cnt 1)
+;      (length-helper (cdr lst) (+ cnt 1)))
+
+(define (lh lst cnt)
+  (cond ((null? lst)
+         cnt)
+	    (else (lh (cdr lst) (+ cnt 1)))))
+
+; 17.11
+
+(define (before-in-list? lst fw sw)
+  (cond ((null? lst) #f)
+        ((equal? (car lst) sw) #f)
+		((equal? (car lst) fw) #t)
+		(else (before-in-list? (cdr lst) fw sw))))
+		
+; 17.12
+
+(define (flatten lst)
+  (cond ((null? lst) '())
+        ((word? (car lst))
+		 (cons (car lst) (flatten (cdr lst))))
+        (else (append (flatten (car lst))
+		              (flatten (cdr lst))))))
+
+; 17.13
+(define (deep-count lst)
+    (cond ((null? lst) 0)
+	      ((word? lst) 1)
+		  (else (+ (deep-count (car lst))
+		           (deep-count (cdr lst))))))
+
+; 17.14
+
+(define (branch num-lst lst)
+  (cond ((null? num-lst)
+         lst)
+		(else 
+		  (branch 
+		    (cdr num-lst) 
+			(car ((repeated cdr (- (car num-lst) 1)) lst))))))
+
+; 17.15
+
+(define (lookup name known-values)
+  (cond ((null? known-values) 'no-value)
+	((equal? (caar known-values) name)
+	 (cadar known-values))
+	(else (lookup name (cdr known-values)))))
+
+(define (add name value known-values)
+  (if (empty? name)
+      known-values
+      (cons (cons name value) known-values)))
+
+; 17.16
+
+(define (valid-infix? ex)
+  (cond ((and (equal? (length ex) 1)
+             (or (number? (car ex))
+			     (valid-infix? (car ex)))) #t)
+        ((and (number? (car ex))
+		      (member (cadr ex) '(+ - / *)))
+	     (valid-infix? (cddr ex)))
+		(else #f)))
+
+
+; 18.1 The leaf node san francisco, the inner set of parentheses
+; indicates the sublist that is the datum of the node. This is because
+; San Francisco is two seperate words, which were it not returned as a
+; list, would return a datum of San. It also would have worked to input
+; "San-Francisco" or "SanFrancisco" to denote the same thing. 
+
+; 18.2
+; Calls to the remaining portion have to be called with cadr instead of
+; cdr, as it is a sublist instead of seperate elements of the same list.
+
+
+; define a test list to use
+
+(define tree-test-list 
+  (make-node
+   'animals
+   (list (make-node 
+          'mammals 
+           (list (make-node 'rodents 
+		           (list (make-node 'rat '())
+				         (make-node 'beaver '())))
+			     (make-node 
+				   'artiodactyla
+				   (list 
+				    (make-node 'whales 
+					  (list (make-node 'blue-whale '())
+					        (make-node 'killer-whale '())))
+				    (make-node 
+					  'pecora
+				      (list 
+					    (make-node 'cervids 
+						  (list (make-node 'elk '())
+						        (make-node 'deer '())
+								(make-node 'antelope '())))
+						(make-node 'bovids 
+						  (list (make-node 'cows '())
+						        (make-node 'goats '())))))))))
+		 (make-node
+		   'reptiles 
+		   (list
+			(make-node
+			  'archosaurs
+			  (list (make-node 'crocodilians 
+			          (list (make-node 'crocodiles '())
+					        (make-node 'alligators '())))
+					(make-node 'birds 
+					  (list (make-node 'ducks '())
+					        (make-node 'finches '()))))))))))
+
+; and a small test list
+
+(define small-tree-test-list 
+  (make-node 'alphabet
+    (list (make-node 'consonants
+	        (list (make-node 'b '())
+			      (make-node 'c '())))
+		  (make-node 'vowels
+		    (list (make-node 'a '())
+			      (make-node 'e '()))))))
+; 18.3
+
+(define (depth tree)
+  (if (null? (children tree))
+      1
+	  (+ 1 (depth-across (children tree)))))
+
+
+(define (depth-across forest)
+  (cond ((null? forest) 0)
+        (else (max (depth (car forest))
+		           (depth-across (cdr forest))))))
+
+; 18.4 
+
+(define (count-nodes tree)
+  (if (null? (children tree))
+      1
+	  (+ 1 (count-nodes-in-forest (children tree)))))
+
+(define (count-nodes-in-forest forest)
+  (if (null? forest)
+      0
+	  (+ (count-nodes (car forest))
+	     (count-nodes-in-forest (cdr forest)))))
