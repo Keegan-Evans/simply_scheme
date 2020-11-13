@@ -1,6 +1,7 @@
-;  4.4
+; 4.4
 ; a. tries to return two different functions/does not multiply all together,
 ; instead it simply returns r^3 instead of multiply the first two terms by r^3.
+
 (define (sphere-volume r)
   (* (/ 4 3)
      3.141592654
@@ -1733,3 +1734,86 @@
       0
 	  (+ (count-nodes (car forest))
 	     (count-nodes-in-forest (cdr forest)))))
+
+; 18.5 Write prune, a procedure that takes a tree as argument and returns a copy of the
+; tree, but with all the leaf nodes of the original tree removed. (If
+; the argument to prune
+; is a one-node tree, in which the root node has no children, then should return #f
+; because the result of removing the root node wouldn’t be a tree.)
+
+(define (prune tree)
+    (cond ((list? (datum (car (children tree))))
+	   (datum tree))
+	  (else (list (datum tree)
+		      (prune-along (children tree))))))
+
+(define (prune-along . branches)
+    (cond ((null? (cdr branches))
+	   (prune (caar branches)))
+          (else (append (prune (car tree))
+	                (prune-along (cdr tree))))))
+
+;(define (prune tree)
+;  (cond ((not (null? (children tree)))
+;	 (cons (car tree)
+;	       (prune-down (car (children tree))
+;				(cadr (children tree)))))))
+;
+;(define (prune-down . branches)
+;  (cond ((null? (cdr branches))
+;	 (prune (car branches)))
+;	(else (cons
+;    (prune (car branches))
+;    (prune (cadr branches))))))
+;
+
+;(define (prune tree)
+;  (if (leaf? tree)
+;      '()
+;      (list (list (car tree)) (map prune (children tree)))))
+;(define (leaf? node)
+;  (null? (children node)))
+
+(define (prune tree)
+  (cond ((null? (children tree))
+         #f)
+		(else (cons (datum tree)
+		            (prune-forest (children tree))))))
+
+(define (prune-forest forest)
+  (cond ((null? forest)
+         '())
+        ((null? (children (car forest)))
+		 (prune-forest (cdr forest)))
+		(else (cons (prune (car forest))
+		            (prune-forest (cdr forest))))))
+
+; 18.6 
+; compute to call the parse function with
+(define (compute tree)
+  (if (number? (datum tree))
+      (datum tree)
+      ((function-named-by (datum tree))
+         (compute (car (children tree)))
+         (compute (cadr (children tree))))))
+
+(define (function-named-by oper)
+  (cond ((equal? oper '+) +)
+	((equal? oper '-) -)
+	((equal? oper '*) *)
+	((equal? oper '/) /)
+	(else (error "no such operator as" oper))))
+
+; parse-scheme
+
+(define (parse-scheme expr)
+    (cond ((null? expr)
+	       '()) 
+		  ((list? (car expr))
+	       (cons (parse-scheme (car expr))
+		         (parse-scheme (cdr expr))))
+          ((number? (car expr))
+		   (cons (list (car expr))
+			     (parse-scheme (cdr expr))))
+          (else (cons (car expr)
+		              (parse-scheme (cdr expr))))))
