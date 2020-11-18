@@ -1817,3 +1817,140 @@
 			     (parse-scheme (cdr expr))))
           (else (cons (car expr)
 		              (parse-scheme (cdr expr))))))
+
+; 19.1
+
+; every produces a list of words
+; map produces a list of lists, each containing everything but the first
+; list object in the original individual list. This is because every
+; operates using sentences  and words where as map simply looks at
+; lists and their objects
+
+; 19.2
+
+(define (keep_helper fn in_lst type base)
+    (cond ((empty? in_lst) 
+	       base)
+		  ((fn (first in_lst))
+		   (type (first in_lst) (keep_helper fn (bf in_lst) type base)))
+		  (else (keep_helper fn (bf in_lst) type base))))
+
+(define (my_keep fn lst)
+    (cond ((word? lst)
+	       (keep_helper fn lst word ""))
+		  ((sentence? lst)
+		   (keep_helper fn lst sentence '()))
+		  (else '(incorrect input type))))
+
+; 19.3
+
+(define (three-arg-accumulate fn base lst)
+  (if (empty? lst)
+      base
+	  (fn (first lst) (three-arg-accumulate fn base (bf lst)))))
+
+; 19.4
+
+(define (left-accumulate fn lst)
+  (if (empty? (bf lst))
+      (first lst)
+	  (fn (left-accumulate fn (bl lst)) (last lst))))
+
+; 19.5
+
+; original
+; (define (true-for-all? pred sent)
+;   (if (equal? (count sent) (count (keep pred sent)))
+;       #t
+;       #f))
+
+(define (new-true-for-all? pred sent)
+  (cond ((empty? sent)
+         #t)
+		((pred (first sent))
+		 (new-true-for-all? pred (bf sent)))
+		(else #f)))
+
+; 19.6
+(define (true-for-any-pair? pred sent)
+  (cond ((null? (cdr sent))
+         #f)
+		((pred (car sent) (cadr sent))
+		 #t)
+		(else (true-for-any-pair? pred (cdr sent)))))
+
+; a different version 
+(define (true-for-any-pair? pred sent rf)
+  (let ((any-pairs (tfaph pred sent)))
+  (if (null? any-pairs)
+      #f
+	  (if (equal? rf 'numbers)
+	      any-pairs
+		  #t))))
+(define (tfaph pred sent)
+    (cond ((null? (cdr sent)) '())
+	      ((pred (car sent) (cadr sent))
+		   (cons (car sent) (tfaph pred (cdr sent))))
+		  (else (append '() (tfaph pred (cdr sent))))))
+; Another form to test out to possibly be used for 19.8
+;(define (true-for-any-pair? pred sent)
+;  (cond ((null? (cdr sent))
+;         (car sent))
+;		((pred (car sent) (cadr sent))
+;		 (car sent))
+;		(else (true-for-any-pair? pred (cdr sent)))))
+
+
+; 19.7
+
+(define (true-for-all-pairs? pred sent)
+  (cond ((equal? (count sent) 1)
+         #t)
+		((pred (first sent) (first (bf sent)))
+		 (true-for-all-pairs? pred (bf sent)))
+		(else #f)))
+
+; 19.8
+
+;(define (true-for-all-pairs-second? pred sent)
+;  (reduce
+;    (lambda (in_sent) (if (true-for-any-pair? pred in_sent)
+;	                      in_sent))
+;;(define (true-for-all-pairs-second? pred sent)
+;	(if 
+;		  (not	
+;			(accumulate
+;			+
+;			(every 
+;				(lambda (stuff) (if (equal? (count stuff) 1)
+;									1
+;									(true-for-any-pair? 
+;									pred 
+;									(se 
+;										(car stuff)
+;										(cadr stuff)))))
+;				sent)))
+;		  #t
+;		  #f))
+
+;(define (true-for-all-pairs-second? pred sent)
+;			(accumulate
+;			list
+;			(every 
+;				(lambda (stuff) (if (equal? (count stuff) 1)
+;									stuff
+;									(true-for-any-pair? 
+;									pred 
+;									(se 
+;										(car stuff)
+;										(cadr stuff)))))
+;				sent)))
+
+; just thinking through the problem
+;(define (true-for-all-pairs-second-helper sent)
+;  (if (= (count sent) 1)
+;      (car sent)
+;	  ((lambda 
+;	    (stuff) 
+;		(true-for-any-pair? equal? (se (car stuff) (cadr stuff)))) 
+;	   sent)))
