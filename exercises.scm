@@ -1858,12 +1858,6 @@
 
 ; 19.5
 
-; original
-; (define (true-for-all? pred sent)
-;   (if (equal? (count sent) (count (keep pred sent)))
-;       #t
-;       #f))
-
 (define (new-true-for-all? pred sent)
   (cond ((empty? sent)
          #t)
@@ -1879,28 +1873,6 @@
 		 #t)
 		(else (true-for-any-pair? pred (cdr sent)))))
 
-; a different version 
-(define (true-for-any-pair? pred sent rf)
-  (let ((any-pairs (tfaph pred sent)))
-  (if (null? any-pairs)
-      #f
-	  (if (equal? rf 'numbers)
-	      any-pairs
-		  #t))))
-(define (tfaph pred sent)
-    (cond ((null? (cdr sent)) '())
-	      ((pred (car sent) (cadr sent))
-		   (cons (car sent) (tfaph pred (cdr sent))))
-		  (else (append '() (tfaph pred (cdr sent))))))
-; Another form to test out to possibly be used for 19.8
-;(define (true-for-any-pair? pred sent)
-;  (cond ((null? (cdr sent))
-;         (car sent))
-;		((pred (car sent) (cadr sent))
-;		 (car sent))
-;		(else (true-for-any-pair? pred (cdr sent)))))
-
-
 ; 19.7
 
 (define (true-for-all-pairs? pred sent)
@@ -1912,45 +1884,13 @@
 
 ; 19.8
 
-;(define (true-for-all-pairs-second? pred sent)
-;  (reduce
-;    (lambda (in_sent) (if (true-for-any-pair? pred in_sent)
-;	                      in_sent))
-;;(define (true-for-all-pairs-second? pred sent)
-;	(if 
-;		  (not	
-;			(accumulate
-;			+
-;			(every 
-;				(lambda (stuff) (if (equal? (count stuff) 1)
-;									1
-;									(true-for-any-pair? 
-;									pred 
-;									(se 
-;										(car stuff)
-;										(cadr stuff)))))
-;				sent)))
-;		  #t
-;		  #f))
-
-;(define (true-for-all-pairs-second? pred sent)
-;			(accumulate
-;			list
-;			(every 
-;				(lambda (stuff) (if (equal? (count stuff) 1)
-;									stuff
-;									(true-for-any-pair? 
-;									pred 
-;									(se 
-;										(car stuff)
-;										(cadr stuff)))))
-;				sent)))
-
-; just thinking through the problem
-;(define (true-for-all-pairs-second-helper sent)
-;  (if (= (count sent) 1)
-;      (car sent)
-;	  ((lambda 
-;	    (stuff) 
-;		(true-for-any-pair? equal? (se (car stuff) (cadr stuff)))) 
-;	   sent)))
+(define (true-for-all-pairs2? pred sent)
+  (if 
+    (not (null?	(reduce 
+					(lambda (ls ls2)(if 
+								(true-for-any-pair? pred (list ls ls2))
+								ls
+								'()))
+					sent)))
+	#t
+	#f))
