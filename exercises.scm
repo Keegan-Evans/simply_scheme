@@ -1894,3 +1894,50 @@
 					sent)))
 	#t
 	#f))
+
+; 19.9
+
+(define (hi-sort lst pred)
+    (if (null? lst)
+	    '()
+		(cons (earliest-inst lst pred)
+		      (hi-sort (remove-inst (earliest-inst lst pred) lst) pred))))		
+
+(define (earliest-inst lst pred)
+  (ei-helper (car lst) (cdr lst) pred))
+
+(define (ei-helper so-far rest pred)
+  (cond ((null? rest) so-far)
+        ((pred so-far (car rest))
+		 (ei-helper so-far (cdr rest) pred))
+		(else (ei-helper (car rest) (cdr rest) pred))))
+
+(define (remove-inst inst lst)
+  (cond ((null? lst) '())
+        ((equal? inst (car lst)) 
+		 (cdr lst))
+		(else (cons (car lst)
+		            (remove-inst inst (cdr lst))))))
+
+; 19.10
+
+(define (deep-tree fn structure)
+  (cond ((null? (children structure)) 
+         (list (fn (datum structure))))
+		(else (cons (fn (datum structure))
+		            (deep-tree-across fn (children structure))))))
+
+(define (deep-tree-across fn structure)
+  (cond ((null? (cdr structure))
+         (deep-tree fn (car structure)))
+		(else (list (deep-tree fn (car structure))
+		            (deep-tree-across fn (cdr structure))))))
+
+; 19.11
+
+(define (my-repeated fn n)
+(lambda (any-in)
+  (let rg ((fn fn) (n n))
+    (if (= n 0)
+		any-in
+		(fn (rg fn (- n 1)))))))
