@@ -1936,8 +1936,39 @@
 ; 19.11
 
 (define (my-repeated fn n)
-(lambda (any-in)
-  (let rg ((fn fn) (n n))
-    (if (= n 0)
-		any-in
-		(fn (rg fn (- n 1)))))))
+  (lambda (any-in)
+    (let rg ((fn fn) (n n))
+      (if (= n 0)
+  		  any-in
+  		  (fn (rg fn (- n 1)))))))
+
+; 19.12
+
+(define (tree-reduce fn tree)
+    (cond ((null? (children tree))
+	       (datum tree))
+		  (else (fn (datum tree)
+		            (tree-reduce-across fn (children tree))))))
+
+(define (tree-reduce-across fn branches)
+    (cond ((null? (cdr branches))
+	       (tree-reduce fn (car branches)))
+		  (else (fn (tree-reduce fn (car branches))
+		            (tree-reduce-across fn (cdr branches))))))
+
+
+; 19.13
+
+(define (deep-map f structure)
+  (cond ((word? structure) (f structure))
+        ((null? structure) '())
+		(else (cons (deep-map f (car structure))
+		            (deep-map f (cdr structure))))))
+
+
+(define (deep-reduce fn lst)
+  (cond ((null? lst) (fn))
+        ((not (list? lst))
+		 lst)
+		(else (fn (deep-reduce fn (car lst))
+		          (deep-reduce fn (cdr lst))))))
