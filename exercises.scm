@@ -1972,3 +1972,66 @@
 		 lst)
 		(else (fn (deep-reduce fn (car lst))
 		          (deep-reduce fn (cdr lst))))))
+
+; 20.1 
+; (the night before)
+; (hello little girl)
+
+; 20.2
+; #t
+
+; 20.3
+
+(define (show2 wd)
+  (display wd)
+  (newline))
+
+; 20.4
+
+(define (converse)
+(begin 
+  (read-line)
+  (display "hello im the computer. who are you? ")
+  (let ((name (read-line)))
+  (display-sent (se 'hi (first name) "how are you? ")))
+  (let ((doing (read-line)))
+  (display "That is great"))
+  (newline)))
+
+(define (display-sent sent)
+  (if (equal? (count sent) 1)
+      (display (first sent))
+	  (begin (display (first sent))
+	         (display " ")
+			 (display-sent (bf sent)))))
+
+; 20.5 
+(define (longest-last-draft names)
+  (let ((nh (lambda (so-far rest)
+              (cond ((empty? rest)
+			         so-far)
+				    ((> so-far (count (cdar rest)))
+					 (nh (count cdar rest) (cdr rest)))
+					(else (nh so-far (cdr rest)))))))
+	   (nh (count (cdar names)) (cdr names))))
+
+(define (longest-last names)
+  (let nh ((so-far (cadar names)) (rest (cdr names)))
+    (cond ((empty? rest)
+           so-far)
+          ((< (count so-far) (count (cadar rest)))
+           (nh (cadar rest) (cdr rest)))
+          (else (nh so-far (cdr rest))))))
+
+(define russian-composers '(
+	(piotr tchaikovsky) 
+	(nicolay rimsky-korsakov)
+	(sergei rachmaninov) 
+	(modest musorgsky)))
+
+(define (let-er lol)
+  (let egg ((shell (car lol)) (yolk (cdr lol)))
+    (if (empty? yolk)
+	    '()
+		(cons (word shell (car yolk)) (egg (car yolk) (cdr yolk))))))
+

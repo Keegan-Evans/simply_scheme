@@ -1,0 +1,11 @@
+(define (play-ttt-helper x-strat o-strat position whose-turn)
+(cond ((already-won? position (opponent whose-turn))
+(list (opponent whose-turn) 'wins!))
+((tie-game? position) '(tie-game))
+(else (let ((square (if (equal? whose-turn 'x)
+(x-strat position 'x)
+(o-strat position 'o))))
+(play-ttt-helper x-strat
+o-strat
+(add-move square whose-turn position)
+(opponent whose-turn))))))
