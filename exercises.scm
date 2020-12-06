@@ -2016,12 +2016,13 @@
 	   (nh (count (cdar names)) (cdr names))))
 
 (define (longest-last names)
-  (let nh ((so-far (cadar names)) (rest (cdr names)))
-    (cond ((empty? rest)
-           so-far)
-          ((< (count so-far) (count (cadar rest)))
-           (nh (cadar rest) (cdr rest)))
-          (else (nh so-far (cdr rest))))))
+  (count
+	(let nh ((so-far (cadar names)) (rest (cdr names)))
+		(cond ((empty? rest)
+			so-far)
+			((< (count so-far) (count (cadar rest)))
+			(nh (cadar rest) (cdr rest)))
+			(else (nh so-far (cdr rest)))))))
 
 (define russian-composers '(
 	(piotr tchaikovsky) 
@@ -2034,4 +2035,15 @@
     (if (empty? yolk)
 	    '()
 		(cons (word shell (car yolk)) (egg (car yolk) (cdr yolk))))))
+
+(define (name-table names)
+  (let name-table-var ((la-names names) 
+                       (cnt (+ (longest-last names) 2)))
+    (if (null? la-names)
+	    'done
+		(begin (display (align (cadar la-names) cnt))
+		       (show (caar la-names))
+			   (name-table-var (cdr la-names) cnt)))))
+
+; 20.6
 
