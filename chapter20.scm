@@ -98,8 +98,8 @@
 (define (already-won? position who)
   (member? (word who who who) (find-triples position)))
 
-(define (tie-game? position)
-  (not (member? '_ position)))
+;(define (tie-game? position)
+;  (not (member? '_ position)))
 
 ; a program that takes strategies as inputs and plays game
 
@@ -110,7 +110,7 @@
 (define (play-ttt-helper x-strat o-strat position whose-turn)
   (cond ((already-won? position (opponent whose-turn))
          (list (opponent whose-turn) 'wins!))
-        ((tie-game? position) '(tie game))
+        ((tie-game? position whose-turn) '(tie game))
         (else (let ((square (if (equal? whose-turn 'x)
                                 (x-strat position 'x)
                                 (o-strat position 'o))))

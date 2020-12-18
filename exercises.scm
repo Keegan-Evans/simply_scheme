@@ -630,7 +630,7 @@
       (se '(Game already won by)  (opponent me))))
 
 ; 10.2 (and modified/added to for 10.3)
-(define (tie-game? triples me)
+(define (old-new-tie-game? triples me)
   (if (or (empty? (keep number? triples))
 	  (= (count (keep 
 		      (lambda (triple) (split-pair? triple me)) 
@@ -638,6 +638,16 @@
 	     8))
      '(The game is tied)
      #f))
+
+(define (tie-game? position me)
+  (let ((triples (find-triples position)))
+  (if (or (empty? (keep number? triples))
+	  (= (count (keep 
+		      (lambda (triple) (split-pair? triple me)) 
+		      triples))
+	     8))
+     '(The game is tied)
+     #f)))
 
 ; 10.3
 (define (split-pair? triple me)
@@ -2047,3 +2057,71 @@
 
 ; 20.6
 
+;(define (ask-user position letter)
+;  (print-position position)
+;  (display letter)
+;  (display "'s move: ")
+;  (read))
+;
+;(define (ask-user position letter)
+;  (print-position position)
+;  (display letter)G
+;  (display "'s move: ")
+;  (let ((user-input (read)))
+;    (if (and (number? user-input)
+;	         (<= user-input 9)
+;			 (<= 1 user-input))
+;		user-input
+;		(begin
+;		  (display
+;		   "That is an invalid input, please enter a number between 1 and 9")
+;		  (ask-user position letter)))))
+;
+; 20.7	
+
+; if you select a position that you already hold, the program seems to
+; skip your turn and if you
+
+(define (ask-user position letter)
+  (print-position position)
+  (display letter)
+  (display "'s move: ")
+  (let ((user-input (read)))
+    (cond 
+		((not (equal? (item user-input position) '_))
+		(begin
+			(display
+			"That position has already been choosen, pick a different position")
+			(newline)
+			(ask-user position letter)))
+	    ((and (number? user-input)
+	         (<= user-input 9)
+			 (<= 1 user-input))
+		    user-input)
+		(else (begin
+		  (display
+		   "That is an invalid input, please enter a number between 1 and 9")
+		  (ask-user position letter))))))
+
+; 20.8
+
+; 20.9
+
+;(define (ttt-game)
+;  (begin 
+;    (show)))
+;
+;(define (play-ttt-helper x-strat o-strat position whose-turn)
+;  (cond ((already-won? position (opponent whose-turn))
+;         (list (opponent whose-turn) 'wins!))
+;        ((tie-game? position whose-turn) 
+;		 (begin
+;		   ))
+;        (else (let ((square (if (equal? whose-turn 'x)
+;                                (x-strat position 'x)
+;                                (o-strat position 'o))))
+;                (play-ttt-helper x-strat
+;                                 o-strat
+;                                 (add-move square whose-turn position)
+;                                 (opponent whose-turn)))))
+;

@@ -15,7 +15,8 @@
 	 '(123 456 789 147 258 369 159 357)))
 
 (define (ttt position me)
-  (ttt-choose (find-triples position) me))
+  ;(ttt-choose (find-triples position) me))
+  (ttt-choose position me))
 
 ;(define (ttt-choose triples me) ;; first version
 ;  (cond ((i-can-win? triples me)
