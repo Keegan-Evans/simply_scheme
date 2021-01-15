@@ -2131,4 +2131,9 @@
 ; recursively calling get-args. This is because different versions of
 ; scheme have different OOE.
 
-; 21.2
+; 21.2 Because in-domain? applies the value returned by
+; type-predicate to the arguments of the function, thus if we simply had
+; #t as this list element, it would try to use #t as a function, which
+; it is not.
+
+; 21.3 Made changes directly in functions.scm, will include
