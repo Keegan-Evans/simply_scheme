@@ -2107,21 +2107,28 @@
 
 ; 20.9
 
-;(define (ttt-game)
-;  (begin 
-;    (show)))
-;
-;(define (play-ttt-helper x-strat o-strat position whose-turn)
-;  (cond ((already-won? position (opponent whose-turn))
-;         (list (opponent whose-turn) 'wins!))
-;        ((tie-game? position whose-turn) 
-;		 (begin
-;		   ))
-;        (else (let ((square (if (equal? whose-turn 'x)
-;                                (x-strat position 'x)
-;                                (o-strat position 'o))))
-;                (play-ttt-helper x-strat
-;                                 o-strat
-;                                 (add-move square whose-turn position)
-;                                 (opponent whose-turn)))))
-;
+(define (play-ttt-show-ties x-strat o-strat)
+ (play-ttt-helper-show-tie x-strat o-strat '_________ 'x))
+
+(define (play-ttt-helper-show-tie x-strat o-strat position whose-turn)
+ (let ((square (if (equal? whose-turn 'x)
+		                  (x-strat position 'x)
+						  (o-strat position 'o))))
+  (cond ((already-won? position (opponent whose-turn))
+         (list (opponent whose-turn) 'wins!))
+		((tie-game? position whose-turn) 
+		 (begin
+		   (show square)
+		   (display "the game has been tied")))
+        (else (play-ttt-helper-show-tie x-strat
+                               o-strat
+                               (add-move square whose-turn position)
+                               (opponent whose-turn))))))
+
+; Chapter 21
+
+; 21.1 Order of Execution. We need to make get-arg is run before
+; recursively calling get-args. This is because different versions of
+; scheme have different OOE.
+
+; 21.2
