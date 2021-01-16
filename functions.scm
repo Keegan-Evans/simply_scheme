@@ -19,9 +19,9 @@
 ; New for 21.3
 (define (functions-loop)
   (let ((fn-entry (get-fn)))
-    (if (equal? fn-entry 'exit)
+    (if (equal? (first fn-entry) 'exit)
 	"Thanks for using FUNCTIONS!"
-	(let ((args (get-args (arg-count fn-entry))))
+	(let ((args (diff-args (arg-count fn-entry))))
 	  (if (not (in-domain? args fn-entry))
 	     (show (cdr (assoc (type-predicate fn-entry) pred-errors)))
 	     (show-answer (apply (scheme-function fn-entry) args)))
@@ -40,6 +40,24 @@
 	   (show "Sorry, that's not a function.")
 	   (get-fn))
 	  (else (assoc (first line) *the-functions*)))))
+
+(define arg-ord (list 'first 'second ' third 'fourth 'fifth 'sixth 'seventh 'eigth 'nineth 'tenth))
+
+(define (diff-args n)
+  (if (= n 1)
+      (list (get-arg))
+	  (get-arg-ord n arg-ord)))
+
+(define (get-arg-ord n ord-list)
+  (if (= n 0)
+      '()
+	  (begin
+	  (display (car ord-list))
+	  (display " ")
+	   (let ((this-arg (get-arg)))
+	    (cons this-arg (get-arg-ord (- n 1) (cdr ord-list)))))))
+
+; old get-args and get-arg
 
 (define (get-args n)
   (if (= n 0)
