@@ -2136,4 +2136,19 @@
 ; #t as this list element, it would try to use #t as a function, which
 ; it is not.
 
-; 21.3 Made changes directly in functions.scm, will include
+; 21.3-5 Made changes directly in functions.scm
+
+; 21.6 Because of error checking in get-fn
+
+; 21.7 Because we have to allow any single input, so that scheme can
+; evaluate whether the input is a word or not. 
+
+; 21.8 The functions loop procedure/ultimately the string "Thanks for
+; using FUNCTIONS", everything else is just displayed text/side effect
+
+; 21.9 It "reduces" invalid inputs until we are left with a valid input
+; and returns that.
+
+
+; Chapter 22
+
