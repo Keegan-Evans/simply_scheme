@@ -2152,3 +2152,19 @@
 
 ; Chapter 22
 
+; 22.1 
+
+(define (concatenate file-names out-file)
+  (let ((outp (open-output-file out-file)))
+    (concatenate-helper file-names outp)
+    (close-output-port outp)))
+
+(define (concatenate-helper file-names outp)
+  (if (empty? file-names)
+      'done
+	  (begin (write-ind-file (first file-names outp))
+	         (concatenate-helper (bf filenames) outp))))
+
+
+(define (write-ind-file ind-file outp)
+  (let ))
