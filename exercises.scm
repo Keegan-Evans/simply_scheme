@@ -2162,9 +2162,14 @@
 (define (concatenate-helper file-names outp)
   (if (empty? file-names)
       'done
-	  (begin (write-ind-file (first file-names outp))
-	         (concatenate-helper (bf filenames) outp))))
+	  (let ((this-file (open-input-file (first file-names))))
+		(begin (write-ind-file (read-line this-file) this-file outp)
+		       (close-input-file this-file)
+	           (concatenate-helper (bf filenames) outp)))))
 
 
-(define (write-ind-file ind-file outp)
-  (let ))
+(define (write-ind-file line ind-file outp)
+  (if (eof-object? line)
+      #f
+	  (begin (show line outp)
+	         (write-ind-file (read-line ind-file) ind-file outp))))
